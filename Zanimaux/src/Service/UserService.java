@@ -26,6 +26,7 @@ import java.util.Map;
  */
 public class UserService {
 
+    public static User currentUser=new User();
     public String Login(String email, String password) {
         String msg1 = "";
 
@@ -89,6 +90,7 @@ public class UserService {
                             u.setImage(objUser.get("image").toString());
                             u.setVille(objUser.get("ville").toString());
 
+                            currentUser=u;
                         }
                         
                     

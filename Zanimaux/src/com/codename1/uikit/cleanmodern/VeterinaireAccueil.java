@@ -5,6 +5,8 @@
  */
 package com.codename1.uikit.cleanmodern;
 
+import Entity.Veterinaire;
+import Service.VeterinaireService;
 import com.codename1.components.ScaleImageLabel;
 import com.codename1.components.SpanLabel;
 import com.codename1.components.ToastBar;
@@ -126,11 +128,12 @@ public class VeterinaireAccueil extends BaseForm {
         addOrientationListener(e -> {
             updateArrowPosition(barGroup.getRadioButton(barGroup.getSelectedIndex()), arrow);
         });
-        
-        addButton(res.getImage("news-item-1.jpg"), "Morbi per tincidunt tellus sit of amet eros laoreet.", false, 26, 32);
-        addButton(res.getImage("news-item-2.jpg"), "Fusce ornare cursus masspretium tortor integer placera.", true, 15, 21);
-        addButton(res.getImage("news-item-3.jpg"), "Maecenas eu risus blanscelerisque massa non amcorpe.", false, 36, 15);
-        addButton(res.getImage("news-item-4.jpg"), "Pellentesque non lorem diam. Proin at ex sollicia.", false, 11, 9);
+        VeterinaireService vs= new VeterinaireService();
+        for (int i=0;i< vs.getAllUsers().size();i++)
+        {
+        addButton(res.getImage("news-item-1.jpg"), vs.getAllUsers().get(i));
+        show();
+        }
     }
     
     private void updateArrowPosition(Button b, Label arrow) {
@@ -178,38 +181,41 @@ public class VeterinaireAccueil extends BaseForm {
         swipe.addTab("", page1);
     }
     
-   private void addButton(Image img, String title, boolean liked, int likeCount, int commentCount) {
+   private void addButton(Image img, Veterinaire v) {
        int height = Display.getInstance().convertToPixels(11.5f);
        int width = Display.getInstance().convertToPixels(14f);
        Button image = new Button(img.fill(width, height));
        image.setUIID("Label");
        Container cnt = BorderLayout.west(image);
        cnt.setLeadComponent(image);
-       TextArea ta = new TextArea(title);
-       ta.setUIID("NewsTopLine");
-       ta.setEditable(false);
+       
+       TextArea tnom = new TextArea(v.getNom());
+       tnom.setUIID("NewsTopLine");
+       tnom.setEditable(false);
+       
+        TextArea tprenom = new TextArea(v.getPrenom());
+       tprenom.setUIID("NewsTopLine");
+       tprenom.setEditable(false);
+       
+        TextArea tmail = new TextArea(v.getMail());
+       tmail.setUIID("NewsTopLine");
+       tmail.setEditable(false);
+       
+        TextArea tlieux = new TextArea(v.getLieux());
+       tlieux.setUIID("NewsTopLine");
+       tlieux.setEditable(false);
 
-       Label likes = new Label(likeCount + " Likes  ", "NewsBottomLine");
-       likes.setTextPosition(RIGHT);
-       if(!liked) {
-           FontImage.setMaterialIcon(likes, FontImage.MATERIAL_FAVORITE);
-       } else {
-           Style s = new Style(likes.getUnselectedStyle());
-           s.setFgColor(0xff2d55);
-           FontImage heartImage = FontImage.createMaterial(FontImage.MATERIAL_FAVORITE, s);
-           likes.setIcon(heartImage);
-       }
-       Label comments = new Label(commentCount + " Comments", "NewsBottomLine");
-       FontImage.setMaterialIcon(likes, FontImage.MATERIAL_CHAT);
+        TextArea ttel = new TextArea(String.valueOf(v.getTel()));
+       ttel.setUIID("NewsTopLine");
+       ttel.setEditable(false);
        
        
        cnt.add(BorderLayout.CENTER, 
                BoxLayout.encloseY(
-                       ta,
-                       BoxLayout.encloseX(likes, comments)
+                       tnom,tprenom,tmail,tlieux,ttel
                ));
        add(cnt);
-       image.addActionListener(e -> ToastBar.showMessage(title, FontImage.MATERIAL_INFO));
+       image.addActionListener(e -> ToastBar.showMessage(v.getNom(), FontImage.MATERIAL_INFO));
    }
     
     private void bindButtonSelection(Button b, Label arrow) {
